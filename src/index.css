@@ -4,8 +4,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  --background: hsl(0 0% 100%);
+/* :root {
+  --background: hsl(0, 0%, 100%);
   --foreground: hsl(0 0% 3.9%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(0 0% 3.9%);
@@ -57,6 +57,53 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+} */
+
+
+:root {
+  --background: hsl(31 48% 100%);
+  --foreground: hsl(31 5% 10%);
+  --card: hsl(31 48% 100%);
+  --card-foreground: hsl(31 5% 15%);
+  --popover: hsl(31 48% 100%);
+  --popover-foreground: hsl(31 95% 10%);
+  --primary: hsl(31 100% 50%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(31 30% 90%);
+  --secondary-foreground: hsl(0 0% 0%);
+  --muted: hsl(-7 30% 95%);
+  --muted-foreground: hsl(31 5% 40%);
+  --accent: hsl(-7 30% 90%);
+  --accent-foreground: hsl(31 5% 15%);
+  --destructive: hsl(0 50% 50%);
+  --destructive-foreground: hsl(31 5% 100%);
+  --border: hsl(31 30% 82%);
+  --input: hsl(31 30% 50%);
+  --ring: hsl(31 100% 50%);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: hsl(31 48% 10%);
+  --foreground: hsl(31 5% 100%);
+  --card: hsl(31 48% 10%);
+  --card-foreground: hsl(31 5% 100%);
+  --popover: hsl(31 48% 5%);
+  --popover-foreground: hsl(31 5% 100%);
+  --primary: hsl(31 100% 50%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(31 30% 20%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(-7 30% 25%);
+  --muted-foreground: hsl(31 5% 65%);
+  --accent: hsl(-7 30% 25%);
+  --accent-foreground: hsl(31 5% 95%);
+  --destructive: hsl(0 50% 50%);
+  --destructive-foreground: hsl(31 5% 100%);
+  --border: hsl(31 30% 50%);
+  --input: hsl(31 30% 50%);
+  --ring: hsl(31 100% 50%);
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -90,6 +137,10 @@
   --radius-xl: calc(var(--radius) + 4px);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+  --container-center: true;
+  --container-padding: 4rem;
+  --container-2xl: 1400px;
+
 
   @keyframes accordion-down {
     from {
