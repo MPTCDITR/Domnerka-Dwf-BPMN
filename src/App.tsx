@@ -1,15 +1,18 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "@/contexts/AuthContext";
-import Home from "./pages/Home";
+import { LandingPage } from "./pages/LandingPage/LandingPage";
+import HomePage from "./pages/HomePage/HomePage";
+import AppLayout from "./layouts/AppLayout";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route element={<AppLayout />}>
+            <Route path="/home" element={<HomePage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
