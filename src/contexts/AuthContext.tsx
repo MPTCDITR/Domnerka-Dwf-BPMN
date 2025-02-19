@@ -1,122 +1,173 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import { keycloak, initOptions } from "@/lib/Keycloak";
-import { KeycloakProfile } from "keycloak-js";
+// src/AuthContext.tsx
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { keycloak } from "@/lib/Keycloak";
+
+interface UserProfile {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  token: string | null;
-  userProfile: KeycloakProfile | null;
   login: () => Promise<void>;
-  logout: () => Promise<void>;
-  updateToken: (minValidity: number) => Promise<boolean>;
+  logout: () => void;
+  token: string | null;
+  userProfile: UserProfile | null;
+  updateToken: (minValidity?: number) => Promise<boolean>;
+  messageLog: string[];
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<KeycloakProfile | null>(null);
-
-  useEffect(() => {
-    const initKeycloak = async () => {
-      try {
-        const authenticated = await keycloak.init(initOptions);
-        setIsAuthenticated(authenticated);
-
-        if (authenticated) {
-          setToken(
-            typeof keycloak.token !== "undefined" ? keycloak.token : null
-          );
-          const profile = await keycloak.loadUserProfile();
-          setUserProfile(profile);
-
-          // Set up token refresh
-          setInterval(async () => {
-            try {
-              const refreshed = await keycloak.updateToken(70);
-              if (refreshed && typeof keycloak.token !== "undefined") {
-                setToken(keycloak.token);
-              }
-            } catch (error) {
-              console.error("Token refresh error:", error);
-              await logout();
-            }
-          }, 60000);
-        }
-      } catch (error) {
-        console.error("Keycloak initialization error:", error);
-      }
-    };
-
-    initKeycloak();
-
-    // Keycloak event listeners
-    keycloak.onAuthSuccess = () => {
-      console.log("Authentication successful");
-    };
-
-    keycloak.onAuthLogout = () => {
-      console.log("User logged out");
-      setIsAuthenticated(false);
-      setToken(null);
-      setUserProfile(null);
-    };
-  }, []);
-
-  const login = async () => {
-    try {
-      await keycloak.login();
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await keycloak.logout();
-    } catch (error) {
-      console.error("Logout error:", error);
-      throw error;
-    }
-  };
-
-  const updateToken = async (minValidity: number): Promise<boolean> => {
-    try {
-      return await keycloak.updateToken(minValidity);
-    } catch (error) {
-      console.error("Token refresh error:", error);
-      throw error;
-    }
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        token,
-        userProfile,
-        login,
-        logout,
-        updateToken,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
+};
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string | null>(null); // Token can be null
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [messageLog, setMessageLog] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true); // Add a loading state
+
+  const logMessage = (message: string) => {
+    if (process.env.NODE_ENV === "development") {
+      const timestamp = new Date().toISOString();
+      setMessageLog((prevLog) => [...prevLog, `[${timestamp}] ${message}`]);
+    }
+  };
+
+  useEffect(() => {
+    const initKeycloak = async () => {
+      try {
+        logMessage("Initializing Keycloak...");
+        const authenticated = await keycloak.init({ onLoad: "login-required" });
+        setIsAuthenticated(authenticated);
+
+        // Convert undefined token to null
+        setToken(keycloak.token || null);
+
+        if (authenticated) {
+          logMessage("User authenticated successfully.");
+          const profile = await fetchUserProfile();
+          setUserProfile(profile);
+        } else {
+          logMessage("User not authenticated.");
+        }
+      } catch (error) {
+        logMessage(`Failed to initialize Keycloak: ${error}`);
+        console.error("Failed to initialize Keycloak:", error);
+      } finally {
+        setLoading(false); // Mark initialization as complete
+      }
+    };
+
+    initKeycloak();
+  }, []);
+
+  const fetchUserProfile = async (): Promise<UserProfile> => {
+    try {
+      logMessage("Fetching user profile...");
+      const profile = await keycloak.loadUserProfile();
+      logMessage("User profile fetched successfully.");
+      return {
+        username: profile.username || "",
+        email: profile.email || "",
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+      };
+      logout;
+    } catch (error) {
+      logMessage(`Failed to fetch user profile: ${error}`);
+      console.error("Failed to fetch user profile:", error);
+      return {
+        username: "",
+        email: "",
+        firstName: "",
+        lastName: "",
+      };
+    }
+  };
+
+  const login = async () => {
+    try {
+      logMessage("Initiating login process...");
+      await keycloak.login({
+        redirectUri: `${window.location.origin}/dashboard`,
+      });
+      // await keycloak.login();
+      setIsAuthenticated(true);
+    } catch (error) {
+      logMessage(`Login failed: ${error}`);
+      console.error("Login failed:", error);
+    }
+  };
+
+  const logout = () => {
+    logMessage("Initiating logout process...");
+    keycloak.logout({
+      redirectUri: `${window.location.origin}`,
+    });
+    setIsAuthenticated(false);
+    setToken(null); // Set token to null on logout
+    setUserProfile(null);
+    logMessage("User logged out successfully.");
+  };
+
+  // const logout = async () => {
+  //   try {
+  //     // await keycloak.logout({ redirectUri: window.location.href });
+  //     await keycloak.logout();
+  //     setIsAuthenticated(false);
+  //     setToken(null); // Set token to null on logout
+  //     setUserProfile(null);
+  //     logMessage("User logged out successfully.");
+  //   } catch (error) {
+  //     logMessage(`Logout failed: ${error}`);
+  //   }
+  // };
+
+  const updateToken = async (minValidity: number = 5): Promise<boolean> => {
+    try {
+      logMessage("Refreshing token...");
+      const refreshed = await keycloak.updateToken(minValidity);
+      if (refreshed) {
+        // Convert undefined token to null
+        setToken(keycloak.token || null);
+        logMessage("Token refreshed successfully.");
+      } else {
+        logMessage("Token not refreshed.");
+      }
+      return refreshed;
+    } catch (error) {
+      logMessage(`Failed to refresh token: ${error}`);
+      console.error("Failed to refresh token:", error);
+      return false;
+    }
+  };
+
+  const value: AuthContextType = {
+    isAuthenticated,
+    login,
+    logout,
+    token,
+    userProfile,
+    updateToken,
+    messageLog,
+  };
+
+  // Render a loading indicator while initializing Keycloak
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
