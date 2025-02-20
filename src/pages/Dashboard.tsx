@@ -14,10 +14,15 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
-// import { Link } from "react-router-dom";
+import NotAuthComponent from "@/components/contents/NotAuth";
 
 const Dashboard = () => {
-  const { userProfile, logout } = useAuth();
+  const { userProfile, logout, keycloak, isAuthenticated } = useAuth();
+
+  if (!isAuthenticated || !keycloak) {
+    return <NotAuthComponent />;
+  }
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">

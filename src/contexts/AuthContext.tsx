@@ -1,6 +1,7 @@
 // src/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { keycloak } from "@/lib/Keycloak";
+import Keycloak from "keycloak-js";
 
 interface UserProfile {
   username: string;
@@ -17,6 +18,7 @@ interface AuthContextType {
   userProfile: UserProfile | null;
   updateToken: (minValidity?: number) => Promise<boolean>;
   messageLog: string[];
+  keycloak?: Keycloak | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,11 +34,12 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null); // Token can be null
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [messageLog, setMessageLog] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true); // Add a loading state
+  const [loading, setLoading] = useState(false); // Add a loading state
+  const [keyCloakRes, setKeyCloakRes] = useState<Keycloak | null>();
 
   const logMessage = (message: string) => {
     if (process.env.NODE_ENV === "development") {
@@ -46,56 +49,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
+    setLoading(true);
     const initKeycloak = async () => {
-      try {
-        logMessage("Initializing Keycloak...");
-        const authenticated = await keycloak.init({ onLoad: "login-required" });
-        setIsAuthenticated(authenticated);
+      keycloak
+        .init({
+          onLoad: "check-sso",
+        })
+        .then((authenticated: boolean) => {
+          setIsAuthenticated(authenticated);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Keycloak initialization failed:", error);
+          setIsAuthenticated(false);
+        })
+        .finally(() => {
+          setToken(keycloak.token || null);
+          setLoading(false);
 
-        // Convert undefined token to null
-        setToken(keycloak.token || null);
-
-        if (authenticated) {
-          logMessage("User authenticated successfully.");
-          const profile = await fetchUserProfile();
-          setUserProfile(profile);
-        } else {
-          logMessage("User not authenticated.");
-        }
-      } catch (error) {
-        logMessage(`Failed to initialize Keycloak: ${error}`);
-        console.error("Failed to initialize Keycloak:", error);
-      } finally {
-        setLoading(false); // Mark initialization as complete
-      }
+          setKeyCloakRes(keycloak);
+          setUserProfile({
+            email: keycloak.idTokenParsed?.email,
+            firstName: keycloak.idTokenParsed?.family_name,
+            lastName: keycloak.idTokenParsed?.given_name,
+            username: keycloak.idTokenParsed?.preferred_username,
+          });
+        });
     };
 
     initKeycloak();
   }, []);
-
-  const fetchUserProfile = async (): Promise<UserProfile> => {
-    try {
-      logMessage("Fetching user profile...");
-      const profile = await keycloak.loadUserProfile();
-      logMessage("User profile fetched successfully.");
-      return {
-        username: profile.username || "",
-        email: profile.email || "",
-        firstName: profile.firstName || "",
-        lastName: profile.lastName || "",
-      };
-      logout;
-    } catch (error) {
-      logMessage(`Failed to fetch user profile: ${error}`);
-      console.error("Failed to fetch user profile:", error);
-      return {
-        username: "",
-        email: "",
-        firstName: "",
-        lastName: "",
-      };
-    }
-  };
 
   const login = async () => {
     try {
@@ -162,6 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     userProfile,
     updateToken,
     messageLog,
+    keycloak: keyCloakRes,
   };
 
   // Render a loading indicator while initializing Keycloak
