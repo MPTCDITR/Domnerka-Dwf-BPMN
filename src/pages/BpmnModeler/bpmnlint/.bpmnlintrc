@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "bpmnlint:recommended",
+    "plugin:camunda/recommended"
+  ],
+  "rules": {
+    "no-disconnected": "error",
+    "label-required": "off",
+    "conditional-flows": "error"
+  }
+}

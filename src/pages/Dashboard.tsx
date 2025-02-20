@@ -14,14 +14,9 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
-import NotAuthComponent from "@/components/contents/NotAuth";
 
 const Dashboard = () => {
-  const { userProfile, logout, keycloak, isAuthenticated } = useAuth();
-
-  if (!isAuthenticated || !keycloak) {
-    return <NotAuthComponent />;
-  }
+  const { userProfile, logout } = useAuth();
 
   return (
     <SidebarProvider>
@@ -173,6 +168,10 @@ const Dashboard = () => {
                 </div>
               </Card>
             </div>
+
+            <a href="/bpmn">
+              <Button>Go to BPMN Editor </Button>
+            </a>
           </main>
         </div>
       </div>

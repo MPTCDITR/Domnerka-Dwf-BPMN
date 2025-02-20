@@ -1,18 +1,14 @@
-import React, { useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import NotAuthComponent from "@/components/contents/NotAuth";
 
 const AuthLayout: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { isAuthenticated, keycloak } = useAuth();
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      const from = location.state?.from?.pathname || location;
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, location.state, navigate]);
+  if (!isAuthenticated || !keycloak) {
+    return <NotAuthComponent />;
+  }
 
   return (
     <div>

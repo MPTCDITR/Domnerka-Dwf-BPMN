@@ -1,0 +1,24 @@
+{
+  "name": "Forms",
+  "prefix": "forms",
+  "uri": "https://BPMN_KH",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [
+    {
+      "name": "StartEventWithCustomForms",
+      "extends": [
+        "bpmn:UserTask"
+      ],
+      "properties": [
+        {
+          "name": "formID",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}
