@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const { isAuthenticated, logout, login } = useAuth();
+  const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <main className="min-h-screen gradient-animation overflow-hidden bg-blue-900">
@@ -48,9 +50,11 @@ export default function Home() {
                   className="button-animation text-primary font-semibold relative overflow-hidden 
                   group px-8 py-3 text-base sm:text-lg rounded-full hover:shadow-xl
                   transition-all duration-300 ease-out"
-                  onClick={logout}
+                  onClick={() => {
+                    navigate("/dashboard");
+                  }}
                 >
-                  <span className="relative z-10">logout</span>
+                  <span className="relative z-10">Get Start</span>
                   <div
                     className="absolute inset-0 bg-white/0 group-hover:bg-white/10 
                     transition-colors duration-300 ease-out"
