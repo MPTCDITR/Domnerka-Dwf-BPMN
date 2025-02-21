@@ -1,12 +1,12 @@
 import React from "react";
+import { useAuth } from "react-oidc-context";
 import { Outlet } from "react-router-dom";
 import NotAuthComponent from "@/components/contents/NotAuth";
-import useAuth from "@/hooks/useAuth";
 
 const AuthLayout: React.FC = () => {
-  const { isAuthenticated, keycloak } = useAuth();
+  const auth = useAuth();
 
-  if (!isAuthenticated || !keycloak) {
+  if (!auth.isAuthenticated) {
     return <NotAuthComponent />;
   }
 

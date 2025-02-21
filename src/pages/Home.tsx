@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "react-oidc-context";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const { isAuthenticated, login } = useAuth();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -25,14 +25,14 @@ export default function Home() {
             </p>
 
             <div className="fade-in-up delay-400 pt-4">
-              {!isAuthenticated ? (
+              {!auth.isAuthenticated ? (
                 <Button
                   variant="secondary"
                   size="lg"
                   className="button-animation text-primary font-semibold relative overflow-hidden 
                     group px-8 py-3 text-base sm:text-lg rounded-full hover:shadow-xl
                     transition-all duration-300 ease-out"
-                  onClick={login}
+                  onClick={() => auth.signinRedirect()}
                 >
                   <span className="relative z-10">Login</span>
                   <div
