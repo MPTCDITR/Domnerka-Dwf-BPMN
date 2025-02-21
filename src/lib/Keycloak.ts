@@ -1,4 +1,8 @@
 import Keycloak, { KeycloakPkceMethod } from "keycloak-js";
+import { UserManager, WebStorageStateStore } from "oidc-client-ts";
+
+const authority = import.meta.env.VITE_KEYCLOAK_URL;
+const clientId = import.meta.env.VITE_KEYCLOAK_CLIENT_ID;
 
 // Define types for Keycloak configuration and initialization options
 interface KeycloakConfig {
@@ -18,6 +22,19 @@ const keycloakConfig: KeycloakConfig = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
   realm: import.meta.env.VITE_KEYCLOAK_REALM,
   clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+};
+
+const userManager = new UserManager({
+  authority,
+  client_id: clientId,
+  redirect_uri: `${window.location.origin}`,
+  post_logout_redirect_uri: window.location.origin,
+  userStore: new WebStorageStateStore({ store: window.sessionStorage }),
+  monitorSession: true, // this allows cross tab login/logout detection
+});
+
+const onSigninCallback = () => {
+  window.history.replaceState({}, document.title, `${window.location.origin}/`);
 };
 
 // Validate environment variables
@@ -61,4 +78,4 @@ keycloak.onTokenExpired = () => {
 };
 
 // Export Keycloak instance and initialization options
-export { keycloak, initOptions };
+export { keycloak, initOptions, userManager, onSigninCallback };

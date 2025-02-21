@@ -13,10 +13,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "react-oidc-context";
+import { decodeUserToken } from "@/utils/keycloak/KeyCloakUtil";
 
 const Dashboard = () => {
-  const { userProfile, logout } = useAuth();
+  const auth = useAuth();
+  const user = decodeUserToken(auth.user);
 
   return (
     <SidebarProvider>
@@ -81,7 +83,7 @@ const Dashboard = () => {
                     <Menu className="h-6 w-6" />
                   </SidebarTrigger>
                   <Avatar className="h-8 w-8" />
-                  <span className="font-medium">{userProfile?.username}</span>
+                  <span className="font-medium">{user?.email}</span>
                   <nav className="hidden md:block ml-8">
                     <ul className="flex space-x-6">
                       <li>
@@ -117,7 +119,9 @@ const Dashboard = () => {
                   </nav>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <Button onClick={logout}>Log out</Button>
+                  <Button onClick={() => auth.signoutRedirect()}>
+                    Log out
+                  </Button>
                 </div>
               </div>
             </div>

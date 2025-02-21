@@ -1,14 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "react-oidc-context";
+
 import Dashboard from "@/pages/Dashboard";
-import { AuthProvider } from "@/contexts/AuthContext";
 import Home from "@/pages/Home";
 import BpmnEditor from "@/pages/BpmnModeler/BpmnEditor";
 import AuthLayout from "@/layouts/layout";
 import NotFound from "@/pages/PageNotFound";
 
+import { userManager, onSigninCallback } from "@/lib/Keycloak";
+
 function App() {
   return (
-    <AuthProvider>
+    <AuthProvider userManager={userManager} onSigninCallback={onSigninCallback}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
