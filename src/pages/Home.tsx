@@ -51,7 +51,7 @@ export default function Home() {
                   group px-8 py-3 text-base sm:text-lg rounded-full hover:shadow-xl
                   transition-all duration-300 ease-out"
                   onClick={() => {
-                    navigate("/dashboard");
+                    navigate("/dashboard/overview");
                   }}
                 >
                   <span className="relative z-10">Get Start</span>
