@@ -6,13 +6,18 @@ export const baseURL = () => {
   }
 };
 
-export const CATEGORIES_URL = 'v1/categories';
-export const FORM_URL = 'v1/forms';
-export const TASK_LIST_URL = 'v1/tasks';
-export const PROCESS_LIST_URL = 'v1/process-instances';
-export const BPMN_PROCESS_URL = 'v1/bpmn-processes';
-export const NOTIFICATION_URL = 'v1/notifications';
-export const FILE_URL = 'v1/files';
-export const MY_FILE_URL = 'v1/my/files';
-export const USER_PROFILE = 'v1/users';
-export const GROUP_URL = 'v1/groups';
+// export const CATEGORIES_URL = 'v1/categories';
+// export const FORM_URL = 'v1/forms';
+// export const TASK_LIST_URL = 'v1/tasks';
+// export const PROCESS_LIST_URL = 'v1/process-instances';
+// export const BPMN_PROCESS_URL = 'v1/bpmn-processes';
+// export const NOTIFICATION_URL = 'v1/notifications';
+// export const FILE_URL = 'v1/files';
+// export const MY_FILE_URL = 'v1/my/files';
+// export const USER_PROFILE = 'v1/users';
+// export const GROUP_URL = 'v1/groups';
+const BASE_URL = "http://localhost:8080"; 
+
+export const BPMN_PROCESS_URL = `${BASE_URL}/v1/bpmn-process`;
+export const USER_PROFILE_URL = `${BASE_URL}/v1/users`;
+export const FEATURE_PROCESS_URL = `${BASE_URL}/v1/featured-process-definition`;
