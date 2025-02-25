@@ -12,4 +12,5 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  assetsInclude: ['**/*.bpmn'], // Add .bpmn files to the list of included assets
 })
