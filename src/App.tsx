@@ -9,8 +9,8 @@ import NotFound from "@/pages/PageNotFound";
 import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
 
 import { userManager, onSigninCallback } from "@/lib/Keycloak";
-import CreateProcess from "./pages/CreateProcess/CreateProcess";
-import ProcessList from "./pages/ProcessList/ProcessList";
+import CreateProcess from "@/pages/CreateProcess/CreateProcess";
+import ProcessList from "@/pages/ProcessList/ProcessList";
 
 function App() {
   return (
