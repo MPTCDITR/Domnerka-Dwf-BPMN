@@ -8,6 +8,7 @@ import AuthLayout from "@/layouts/layout";
 import NotFound from "@/pages/PageNotFound";
 
 import { userManager, onSigninCallback } from "@/lib/Keycloak";
+import CreateProcess from "./pages/CreateProcess/CreateProcess";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/bpmn" element={<BpmnEditor />} />
+            <Route path="/create-process" element={<CreateProcess />}/>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
