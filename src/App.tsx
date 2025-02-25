@@ -6,6 +6,7 @@ import Home from "@/pages/Home";
 import BpmnEditor from "@/pages/BpmnModeler/BpmnEditor";
 import AuthLayout from "@/layouts/layout";
 import NotFound from "@/pages/PageNotFound";
+import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
 
 import { userManager, onSigninCallback } from "@/lib/Keycloak";
 import CreateProcess from "./pages/CreateProcess/CreateProcess";
@@ -17,8 +18,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route element={<AuthLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/bpmn" element={<BpmnEditor />} />
+            <Route element={<DashboardLayout />}>
+              <Route path="/dashboard/overview" element={<Dashboard />} />
+              <Route path="/process/bpmn-editor" element={<BpmnEditor />} />
+            </Route>
             <Route path="/create-process" element={<CreateProcess />}/>
           </Route>
           <Route path="*" element={<NotFound />} />
