@@ -113,7 +113,7 @@ const CreateProcess = () => {
     }
   };
   const handleBack = () => {
-    navigate("/dashboard");
+    navigate("/process/process_list");
   };
 
   return (
