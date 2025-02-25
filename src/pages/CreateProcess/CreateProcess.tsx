@@ -103,6 +103,8 @@ const CreateProcess = () => {
       setStatus(
         `Process deployed successfully! Deployment ID: ${deploymentId}`
       );
+
+      navigate("/process/process_list");
     } catch (error: unknown) {
       console.error("Deployment error:", error);
       setStatus(
