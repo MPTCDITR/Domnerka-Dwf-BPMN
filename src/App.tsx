@@ -9,6 +9,8 @@ import NotFound from "@/pages/PageNotFound";
 import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
 
 import { userManager, onSigninCallback } from "@/lib/Keycloak";
+import CreateProcess from "@/pages/CreateProcess/CreateProcess";
+import ProcessList from "@/pages/ProcessList/ProcessList";
 
 function App() {
   return (
@@ -19,7 +21,12 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard/overview" element={<Dashboard />} />
-              <Route path="/process/bpmn-editor" element={<BpmnEditor />} />
+              <Route path="/process/process_list" element={<ProcessList />} />
+              <Route
+                path="/process/create_process"
+                element={<CreateProcess />}
+              />
+              <Route path="/process/:id" element={<BpmnEditor />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
