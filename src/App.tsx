@@ -11,6 +11,7 @@ import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
 import { userManager, onSigninCallback } from "@/lib/Keycloak";
 import CreateProcess from "@/pages/CreateProcess/CreateProcess";
 import ProcessList from "@/pages/ProcessList/ProcessList";
+import EditProcess from "@/pages/EditProcess/EditProcess";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                 element={<CreateProcess />}
               />
               <Route path="/process/:id" element={<BpmnEditor />} />
+              <Route path="/process/edit_process/:id" element={<EditProcess />}/>
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
