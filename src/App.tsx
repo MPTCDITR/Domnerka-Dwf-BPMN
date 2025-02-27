@@ -11,28 +11,51 @@ import DashboardLayout from "@/layouts/dashboard/DashboardLayout";
 import { userManager, onSigninCallback } from "@/lib/Keycloak";
 import CreateProcess from "@/pages/CreateProcess/CreateProcess";
 import ProcessList from "@/pages/ProcessList/ProcessList";
+import ProcessListPage from "@/pages/ProcessList/ProcessLists";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 2,
+    },
+  },
+});
 
 function App() {
   return (
-    <AuthProvider userManager={userManager} onSigninCallback={onSigninCallback}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route element={<AuthLayout />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/dashboard/overview" element={<Dashboard />} />
-              <Route path="/process/process_list" element={<ProcessList />} />
-              <Route
-                path="/process/create_process"
-                element={<CreateProcess />}
-              />
-              <Route path="/process/:id" element={<BpmnEditor />} />
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider
+        userManager={userManager}
+        onSigninCallback={onSigninCallback}
+      >
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route element={<AuthLayout />}>
+              <Route element={<DashboardLayout />}>
+                <Route path="/dashboard/overview" element={<Dashboard />} />
+                <Route
+                  path="/process/process_list"
+                  element={<ProcessListPage />}
+                />
+                <Route
+                  path="/process/process_lists"
+                  element={<ProcessList />}
+                />
+                <Route
+                  path="/process/create_process"
+                  element={<CreateProcess />}
+                />
+                <Route path="/process/:id" element={<BpmnEditor />} />
+              </Route>
             </Route>
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

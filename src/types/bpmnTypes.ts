@@ -1,9 +1,9 @@
-// src/types/bpmnTypes.ts
-export interface BpmnProcess {
+  export interface BpmnProcess {
     id: string;
-    processName: string;
-    description: string;
-    isFeatured: boolean;
+    key?: string;
+    name: string | null;
+    description: string | null;
+    isFeatured?: boolean;
   }
   
   export interface BpmnSaveResponse {

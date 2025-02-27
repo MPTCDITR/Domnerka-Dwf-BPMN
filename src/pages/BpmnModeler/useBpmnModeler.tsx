@@ -45,7 +45,7 @@ export const useBpmnModeler = () => {
     });
 
     bpmnModelerRef.current = bpmnModeler;
-    bpmnModelerRef.current.createDiagram();
+    // bpmnModelerRef.current.createDiagram();
 
     return () => {
       bpmnModeler.destroy();
