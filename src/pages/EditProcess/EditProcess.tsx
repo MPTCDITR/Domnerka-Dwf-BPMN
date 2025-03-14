@@ -115,7 +115,7 @@ const EditProcess = () => {
         bpmn: bpmnXml,
       };
 
-      const updateUrl = `${BPMN_PROCESS_URL}/process/${processKey}`;
+      const updateUrl = `${BPMN_PROCESS_URL}/${processKey}`;
 
       const response = await fetch(updateUrl, {
         method: "PUT",
