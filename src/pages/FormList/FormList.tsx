@@ -71,8 +71,8 @@ const FormList = () => {
     navigate("/form/form_modeler");
   };
 
-  const handleEditForm = (key: string) => {
-    navigate(`/form/form_modeler/${key}`);
+  const handleEditForm = (id: string) => {
+    navigate(`/form/form_modeler/${id}`);
   };
 
   const handleDeleteForm = async (id: string) => {
@@ -126,7 +126,7 @@ const FormList = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Form List</h2>
         <div className="space-x-4">
-          <Button onClick={handleCreateNew}>Create New Form</Button>
+          <Button onClick={handleCreateNew}>Create Form</Button>
         </div>
       </div>
 
@@ -161,7 +161,7 @@ const FormList = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleEditForm(form.key)}
+                      onClick={() => handleEditForm(form.id)}
                     >
                       Edit Form
                     </Button>

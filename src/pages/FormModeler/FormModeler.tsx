@@ -16,6 +16,7 @@ const FormModeler: React.FC = () => {
   const propertiesPanelRef = useRef<HTMLDivElement>(null);
   const formEditorRef = useRef<FormEditor | null>(null);
   const formPreviewRef = useRef<Form | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [schema, setSchema] = useState<any>({
     type: "default",
@@ -32,7 +33,6 @@ const FormModeler: React.FC = () => {
       return;
     }
 
-    // Initialize editor
     formEditorRef.current = new FormEditor({
       container: containerRef.current,
       propertiesPanel: {
@@ -45,12 +45,10 @@ const FormModeler: React.FC = () => {
       },
     });
 
-    // Import initial schema
     formEditorRef.current.importSchema(schema).catch((err: Error) => {
       console.error("Failed to import initial schema:", err);
     });
 
-    // Set up event listeners
     formEditorRef.current.on("changed", () => {
       const updatedSchema = formEditorRef.current?.getSchema();
       setSchema(updatedSchema);
@@ -69,6 +67,39 @@ const FormModeler: React.FC = () => {
       if (formPreviewRef.current) formPreviewRef.current.destroy();
     };
   }, [data]);
+
+  const handleImportForm = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedSchema = JSON.parse(e.target?.result as string);
+
+        if (!importedSchema.type || !Array.isArray(importedSchema.components)) {
+          throw new Error("Invalid form schema format");
+        }
+        setSchema(importedSchema);
+        formEditorRef.current
+          ?.importSchema(importedSchema)
+          .catch((err: Error) => {
+            setStatus(`Error importing form: ${err.message}`);
+            console.error("Failed to import schema:", err);
+          });
+
+        const newFormName =
+          importedSchema.name || file.name.replace(/\.[^/.]+$/, "");
+        setFormName(newFormName);
+        setStatus("Form imported successfully");
+      } catch (error: any) {
+        setStatus(`Error: Invalid JSON file - ${error.message}`);
+      }
+    };
+    reader.readAsText(file);
+
+    event.target.value = "";
+  };
 
   const handleDeployForm = async () => {
     if (!auth.isAuthenticated || !auth.user?.access_token) {
@@ -143,8 +174,21 @@ const FormModeler: React.FC = () => {
             disabled={isLoading || !formName || !schema.components.length}
             className="bg-green-500 text-white h-9"
           >
-            {isLoading ? "Deploying..." : "Deploy Form"}
+            {isLoading ? "Creating..." : "Create Form"}
           </Button>
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            className="bg-blue-500 text-white h-9"
+          >
+            Import Form
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImportForm}
+            accept=".json"
+            className="hidden"
+          />
           <Button onClick={handleBack} className="bg-gray-500 text-white h-9">
             Back
           </Button>

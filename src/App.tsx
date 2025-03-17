@@ -14,7 +14,7 @@ import ProcessList from "@/pages/ProcessList/ProcessList";
 import EditProcess from "@/pages/EditProcess/EditProcess";
 import FormModeler from "@/pages/FormModeler/FormModeler";
 import FormList from "./pages/FormList/FormList";
-import CreateForm from "./pages/CreateForm/CreateForm";
+import EditForm from "./pages/EditForm/EditForm";
 
 function App() {
   return (
@@ -33,9 +33,8 @@ function App() {
               <Route path="/process/:id" element={<BpmnEditor />} />
               <Route path="/process/edit_process/:id" element={<EditProcess />}/>
               <Route path="/form/form_list" element={<FormList/>}/>
-              <Route path="/form/create_form" element={<CreateForm/>}/>
+              <Route path="/form/form_modeler/:id" element={<EditForm/>}/>
               <Route path="/form/form_modeler/" element={<FormModeler/>}/>
-              <Route path="/form/form_modeler/:key" element={<FormModeler/>}/>
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
