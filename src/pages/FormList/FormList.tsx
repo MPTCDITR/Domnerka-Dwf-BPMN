@@ -16,7 +16,6 @@ interface FormDefinition {
   id: string;
   key: string;
   name: string;
-  description?: string;
   createdAt?: string;
   version?: number;
 }
@@ -134,7 +133,6 @@ const FormList = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Form Name</TableHead>
-            <TableHead>Description</TableHead>
             <TableHead>Created At</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -150,7 +148,6 @@ const FormList = () => {
             forms.map((form) => (
               <TableRow key={form.id}>
                 <TableCell>{form.name}</TableCell>
-                <TableCell>{form.description || "N/A"}</TableCell>
                 <TableCell>
                   {form.createdAt
                     ? new Date(form.createdAt).toLocaleDateString()
