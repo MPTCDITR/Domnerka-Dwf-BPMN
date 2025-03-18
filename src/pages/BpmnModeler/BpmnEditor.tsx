@@ -241,7 +241,7 @@ const BpmnEditor: React.FC = () => {
       };
 
       const token = auth.user.access_token;
-      const response = await fetch(`${BPMN_PROCESS_URL}/process/${bpmnKey}`, {
+      const response = await fetch(`${BPMN_PROCESS_URL}/${bpmnKey}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
