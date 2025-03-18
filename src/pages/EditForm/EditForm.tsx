@@ -220,7 +220,7 @@ const EditForm: React.FC = () => {
         formEditorRef.current
           ?.importSchema(importedSchema)
           .catch((err: Error) => {
-            setStatus(`Error importing form: ${err.message}`);
+            setStatus(`Error import form: ${err.message}`);
             console.error("Failed to import schema:", err);
           });
 
