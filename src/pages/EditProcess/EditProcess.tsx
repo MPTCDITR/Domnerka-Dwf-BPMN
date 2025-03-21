@@ -87,6 +87,7 @@ const EditProcess = () => {
               <Button
                 type="submit"
                 disabled={form.formState.isSubmitting}
+                onClick={handleBack}
                 className="w-20"
               >
                 Save
