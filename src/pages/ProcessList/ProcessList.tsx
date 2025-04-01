@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useProcessList } from "@/hooks/useProcessList";
+import { FaTrash, FaEdit, FaPen } from "react-icons/fa";
 
 const ProcessList = () => {
   const { processes, loading, error, handleDeleteProcess } = useProcessList();
@@ -87,21 +88,21 @@ const ProcessList = () => {
                       size="sm"
                       onClick={() => handleEditProcess(process.id)}
                     >
-                      Edit Modeler
+                      <FaEdit className="mr-1" />
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleUpdateProcess(process.id)}
                     >
-                      Edit Process
+                      <FaPen className="mr-1" />
                     </Button>
                     <Button
-                      variant="destructive"
+                      variant="outline"
                       size="sm"
                       onClick={() => handleDeleteProcess(process.key)}
                     >
-                      Delete
+                      <FaTrash/>
                     </Button>
                   </div>
                 </TableCell>
